@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API_BASE_URL =
-  process.env.EXPO_PUBLIC_API_URL || "https://bugufibus.onrender.com/api";
+  process.env.EXPO_PUBLIC_API_URL || "http://localhost:3000/";
 
 export interface AuthResponse {
   success: boolean;
@@ -106,7 +106,7 @@ class ApiService {
     fullName: string,
     email: string,
     phoneNumber: string,
-    password: string
+    password: string,
   ): Promise<AuthResponse> {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -165,7 +165,11 @@ class ApiService {
     }
   }
 
-  async getCurrentUser(): Promise<{ success: boolean; user?: User; error?: string }> {
+  async getCurrentUser(): Promise<{
+    success: boolean;
+    user?: User;
+    error?: string;
+  }> {
     try {
       const token = await this.getToken();
       if (!token) {
@@ -213,7 +217,7 @@ class ApiService {
     carPlateNo: string,
     fromBusPark: string,
     toBusPark: string,
-    phoneVisible: boolean = true
+    phoneVisible: boolean = true,
   ): Promise<DriverProfileResponse> {
     try {
       const token = await this.getToken();
@@ -267,20 +271,26 @@ class ApiService {
     }
   }
 
-  async updatePhoneVisibility(
-    phoneVisible: boolean
-  ): Promise<{ success: boolean; phoneVisible?: boolean; message?: string; error?: string }> {
+  async updatePhoneVisibility(phoneVisible: boolean): Promise<{
+    success: boolean;
+    phoneVisible?: boolean;
+    message?: string;
+    error?: string;
+  }> {
     try {
       const token = await this.getToken();
       if (!token) {
         return { success: false, error: "No token found" };
       }
 
-      const response = await fetch(`${API_BASE_URL}/driver/profile/phone-visibility`, {
-        method: "PATCH",
-        headers: this.getHeaders(true),
-        body: JSON.stringify({ phoneVisible }),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/driver/profile/phone-visibility`,
+        {
+          method: "PATCH",
+          headers: this.getHeaders(true),
+          body: JSON.stringify({ phoneVisible }),
+        },
+      );
 
       const data = await response.json();
       return data;
@@ -293,12 +303,17 @@ class ApiService {
     }
   }
 
-  async getPublicDriverProfile(driverId: string): Promise<DriverProfileResponse> {
+  async getPublicDriverProfile(
+    driverId: string,
+  ): Promise<DriverProfileResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/driver/profile/${driverId}`, {
-        method: "GET",
-        headers: this.getHeaders(false),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/driver/profile/${driverId}`,
+        {
+          method: "GET",
+          headers: this.getHeaders(false),
+        },
+      );
 
       const data = await response.json();
       return data;
@@ -316,8 +331,13 @@ class ApiService {
     latitude: number,
     longitude: number,
     heading?: number,
-    speed?: number
-  ): Promise<{ success: boolean; location?: any; message?: string; error?: string }> {
+    speed?: number,
+  ): Promise<{
+    success: boolean;
+    location?: any;
+    message?: string;
+    error?: string;
+  }> {
     try {
       const token = await this.getToken();
       if (!token) {
@@ -346,7 +366,11 @@ class ApiService {
     }
   }
 
-  async stopSharingLocation(): Promise<{ success: boolean; message?: string; error?: string }> {
+  async stopSharingLocation(): Promise<{
+    success: boolean;
+    message?: string;
+    error?: string;
+  }> {
     try {
       const token = await this.getToken();
       if (!token) {
@@ -372,7 +396,7 @@ class ApiService {
   async getNearbyDrivers(
     latitude: number,
     longitude: number,
-    radius: number = 10
+    radius: number = 10,
   ): Promise<NearbyDriversResponse> {
     try {
       const response = await fetch(
@@ -380,7 +404,7 @@ class ApiService {
         {
           method: "GET",
           headers: this.getHeaders(false),
-        }
+        },
       );
 
       const data = await response.json();
